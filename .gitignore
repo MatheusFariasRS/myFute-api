@@ -1,0 +1,26 @@
+# Maven
+target/
+*.log
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Java
+*.class
+
+# Spring Boot
+logs/
+
+# Testes
+coverage/
+*.exec
+
+# Env
+.env
+.env.*
