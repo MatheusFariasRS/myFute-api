@@ -1,0 +1,13 @@
+.git
+.gitignore
+.idea
+.vscode
+.mvn
+*.iml
+node_modules
+coverage
+*.exec
+*.log
+.env
+.env.*
+target
