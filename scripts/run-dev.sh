@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -a
-source ../.env
+source ../.env.development
 set +a
 
 cd ..
