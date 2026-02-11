@@ -1,19 +1,38 @@
 package com.myfute.api.repositories;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.stereotype.Repository;
+
+import java.sql.*;
 
 @Repository
 public class StatusRepository {
 
-  private final JdbcTemplate jdbcTemplate;
+  private Connection getNewConnection() throws SQLException {
+    Dotenv dotenv = Dotenv.configure()
+      .filename(".env.development")
+      .ignoreIfMissing()
+      .load();
 
-  public StatusRepository(JdbcTemplate jdbcTemplate) {
-    this.jdbcTemplate = jdbcTemplate;
+    return DriverManager.getConnection(
+      dotenv.get("POSTGRES_URL"),
+      dotenv.get("POSTGRES_USER"),
+      dotenv.get("POSTGRES_PASSWORD")
+    );
+
+
   }
 
   public String databaseVersion() {
-    return jdbcTemplate.queryForObject("select current_database()", String.class);
+    try (Connection conn = getNewConnection();
+         PreparedStatement ps = conn.prepareStatement("SELECT current_database()");
+         ResultSet rs = ps.executeQuery()) {
+      rs.next();
+      return rs.getString(1);
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+
   }
 
 }
