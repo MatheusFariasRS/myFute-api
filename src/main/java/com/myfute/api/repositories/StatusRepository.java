@@ -3,36 +3,25 @@ package com.myfute.api.repositories;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 @Repository
 public class StatusRepository {
 
-  private Connection getNewConnection() throws SQLException {
-    Dotenv dotenv = Dotenv.configure()
-      .filename(".env.development")
-      .ignoreIfMissing()
-      .load();
+  private final Dotenv dotenv;
 
-    return DriverManager.getConnection(
-      dotenv.get("POSTGRES_URL"),
-      dotenv.get("POSTGRES_USER"),
-      dotenv.get("POSTGRES_PASSWORD")
-    );
-
-
+  public StatusRepository() {
+    this.dotenv = Dotenv.configure().filename(".env.development").ignoreIfMissing().load();
   }
 
-  public String databaseVersion() {
-    try (Connection conn = getNewConnection();
-         PreparedStatement ps = conn.prepareStatement("SELECT current_database()");
-         ResultSet rs = ps.executeQuery()) {
-      rs.next();
-      return rs.getString(1);
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
-
+  public Connection getNewConnection() throws SQLException {
+    return DriverManager.getConnection(dotenv.get("POSTGRES_URL"), dotenv.get("POSTGRES_USER"),
+        dotenv.get("POSTGRES_PASSWORD"));
   }
 
+  public String getDatabaseName() {
+    return dotenv.get("POSTGRES_DB");
+  }
 }
