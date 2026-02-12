@@ -1,6 +1,6 @@
-.PHONY: dev test docker-up docker-down run watch-test check-watchexec
+.PHONY: dev test docker-up docker-down run watch-test check-watchexec watch
 
-run: docker-up dev
+run: docker-up watch
 
 dev:
 	./scripts/run-dev.sh
@@ -13,6 +13,16 @@ docker-up:
 
 docker-down:
 	./scripts/docker-down.sh
+
+watch: check-watchexec
+	watchexec \
+  	-w src \
+  	-w pom.xml \
+  	-e java,yml,yaml,properties,xml \
+  	--restart \
+  	--clear \
+  	-- \
+  	./scripts/run-dev.sh
 
 watch-test: check-watchexec
 	watchexec \
