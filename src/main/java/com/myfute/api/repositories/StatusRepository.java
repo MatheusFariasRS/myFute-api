@@ -17,11 +17,19 @@ public class StatusRepository {
   }
 
   public Connection getNewConnection() throws SQLException {
-    return DriverManager.getConnection(dotenv.get("POSTGRES_URL"), dotenv.get("POSTGRES_USER"),
-        dotenv.get("POSTGRES_PASSWORD"));
+    String host = dotenv.get("PGHOST");
+    String database = dotenv.get("PGDATABASE");
+    String user = dotenv.get("PGUSER");
+    String password = dotenv.get("PGPASSWORD");
+    String sslMode = dotenv.get("PGSSLMODE");
+
+    String url = "jdbc:postgresql://" + host + "/" + database + "?sslmode=" + sslMode;
+
+    return DriverManager.getConnection(url, user, password);
+
   }
 
   public String getDatabaseName() {
-    return dotenv.get("POSTGRES_DB");
+    return dotenv.get("PGDATABASE");
   }
 }
