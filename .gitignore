@@ -28,3 +28,7 @@ coverage/
 
 watchexec-*
 *.tar.xz
+
+flyway.tar.gz
+jacoco.exec
+pom.xml.* backups
