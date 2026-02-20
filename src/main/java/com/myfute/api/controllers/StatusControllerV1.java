@@ -1,11 +1,11 @@
 package com.myfute.api.controllers;
 
-import com.myfute.api.repositories.StatusRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,10 +18,10 @@ import java.util.Map;
 @RequestMapping("/v1/status")
 public class StatusControllerV1 {
 
-  private final StatusRepository statusRepository;
+  private final DataSource dataSource;
 
-  public StatusControllerV1(StatusRepository statusRepository) {
-    this.statusRepository = statusRepository;
+  public StatusControllerV1(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   @GetMapping
@@ -29,18 +29,14 @@ public class StatusControllerV1 {
 
     Instant updatedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
 
-    Connection conn = null;
-
-    try {
-      conn = statusRepository.getNewConnection();
-
-      String databaseName = statusRepository.getDatabaseName();
+    try (Connection conn = dataSource.getConnection()) {
 
       String version;
       try (PreparedStatement ps = conn.prepareStatement("SHOW server_version;"); ResultSet rs = ps.executeQuery()) {
         rs.next();
         version = rs.getString(1);
       }
+
       int maxConnections;
       try (PreparedStatement ps = conn.prepareStatement("SHOW max_connections;"); ResultSet rs = ps.executeQuery()) {
         rs.next();
@@ -55,14 +51,9 @@ public class StatusControllerV1 {
         rs.next();
         openedConnections = rs.getInt(1);
       }
+
       return ResponseEntity.ok(Map.of("updated_at", updatedAt, "dependencies", Map.of("database",
           Map.of("version", version, "max_connections", maxConnections, "opened_connections", openedConnections))));
-
-    } finally {
-      if (conn != null) {
-        conn.close();
-      }
     }
   }
-
 }
