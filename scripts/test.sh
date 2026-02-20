@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-set -a
-source .env
-set +a
+set -e
 
-./mvnw test
+./mvnw test -Dspring.profiles.active=test

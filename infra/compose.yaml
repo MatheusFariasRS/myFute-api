@@ -1,8 +1,10 @@
 services:
   database:
     image: postgres:16-alpine
-    env_file:
-      - ../.env.development
+    environment:
+      POSTGRES_USER: local_user
+      POSTGRES_PASSWORD: local_password
+      POSTGRES_DB: local_db
     ports:
       - "5433:5432"
 
