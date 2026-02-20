@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${PGHOST}:${PGPORT:5432}/${PGDATABASE}?sslmode=${PGSSLMODE:require}
+    username: ${PGUSER}
+    password: ${PGPASSWORD}
+
+feature:
+  migrations: false

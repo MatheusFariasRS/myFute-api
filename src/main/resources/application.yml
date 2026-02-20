@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: myfute
+  flyway:
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    
+
+feature:
+  migrations: false
