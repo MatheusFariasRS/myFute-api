@@ -43,7 +43,7 @@ public class MigrationsControllerV1 {
 
     List<Map<String, Object>> list = new ArrayList<>();
 
-    for (MigrationInfo m : flyway.info().pending()) {
+    for (MigrationInfo m : flyway.info().all()) {
       list.add(Map.of("version", m.getVersion() != null ? m.getVersion().toString() : "", "description",
           m.getDescription(), "script", m.getScript(), "state", m.getState().name()));
     }
